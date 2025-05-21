@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Study Partner System{% endblock %}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/default_style.css') }}">
+    <script src="https://kit.fontawesome.com/29aac9abac.js" crossorigin="anonymous"></script>
+    <style>
+        .badge { 
+            background-color: #e74c3c; color: white; 
+            padding: 2px 6px; font-size: 0.75em; 
+            border-radius: 10px; margin-left: 4px;
+            vertical-align: super; /* Aligns badge nicely with text */
+        }
+        /* Ensure active class styles are applied correctly */
+        .navbar-default .nav-links-default a.active {
+            color: #3498db !important; /* Primary color for active link */
+            border-bottom-color: #3498db !important; /* Ensure override if needed */
+        }
+    </style>
+    {% block head_extra %}{% endblock %}
+</head>
+<body class="default-body">
+     <nav class="navbar-default">
+         <div class="nav-container-default">
+             <a class="nav-brand-default" href="{{ url_for('main.index') }}">StudyPartner</a>
+             
+             <div class="nav-links-default">
+                 
+                 {% if session.get('user_id') and not session.get('is_admin') %}
+                     <a href="{{ url_for('main.dashboard') }}" {% if request.endpoint == 'main.dashboard' %}class="active"{% endif %}>Dashboard</a>
+                     <a href="{{ url_for('main.list_groups') }}" {% if request.endpoint in ['main.list_groups', 'main.view_group', 'main.create_group'] %}class="active"{% endif %}>Groups</a>
+                     <a href="{{ url_for('main.view_profile', view_user_id=session['user_id']) }}" {% if request.endpoint == 'main.view_profile' and request.view_args.get('view_user_id') == session.user_id %}class="active"{% endif %}>My Profile</a>
+                     <a href="{{ url_for('main.view_notifications') }}" {% if request.endpoint == 'main.view_notifications' %}class="active"{% endif %}>
+                         Notifications
+                         {% if session.get('unread_notifications', 0) > 0 %}
+                             <span class="badge">{{ session.unread_notifications }}</span>
+                         {% endif %}
+                     </a>
+                     <a href="{{ url_for('main.logout') }}">Logout ({{ session.user_name | default('User') }})</a>
+                 
+                 {% elif session.get('is_admin') %}
+                     <a href="{{ url_for('admin.admin_home') }}" {% if request.blueprint == 'admin' and request.endpoint == 'admin.admin_home' %}class="active"{% endif %}>Admin Dashboard</a>
+                     <a href="{{ url_for('admin.view_users') }}" {% if request.endpoint == 'admin.view_users' %}class="active"{% endif %}>Manage Users</a>
+                     <a href="{{ url_for('admin.view_groups') }}" {% if request.endpoint == 'admin.view_groups' %}class="active"{% endif %}>Manage Groups</a>
+                     
+                     <a href="{{ url_for('admin.admin_logout') }}">Admin Logout ({{ session.admin_username | default('Admin') }})</a>
+
+                 
+                 {% else %}
+                     <a href="{{ url_for('main.index') }}" {% if request.endpoint == 'main.index' %}class="active"{% endif %}>Signup</a>
+                     <a href="{{ url_for('main.login') }}" {% if request.endpoint == 'main.login' %}class="active"{% endif %}>Login</a>
+                     <a href="{{ url_for('admin.admin_login') }}" {% if request.endpoint == 'admin.admin_login' %}class="active"{% endif %}>Admin Login</a>
+                 {% endif %}
+             </div>
+             
+             
+             {% if session.get('user_id') or session.get('is_admin') %}
+             <form class="nav-search-form-default" action="{{ url_for('main.search') }}" method="GET">
+                 <input type="search" name="q" placeholder="Search users..." aria-label="Search" value="{{ request.args.get('q', '') }}">
+                 <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+             </form>
+             {% endif %}
+         </div>
+     </nav>
+
+    <div class="main-content-default">
+        {% include '_flash_messages.html' %} 
+        
+        {% block content %}
+            <div class="container-default">
+                 <p>Welcome to the Study Partner System. Please <a href="{{ url_for('main.login')}}">login</a> or <a href="{{ url_for('main.index')}}">signup</a>.</p>
+            </div>
+        {% endblock %}
+    </div>
+
+    <footer class="footer-default">
+        <p>© {% autoescape false %}{{ now.year if now else '2024' }}{% endautoescape %} DevDynamos - Study Partner Pairing System</p>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    {% block scripts_extra %}{% endblock %}
+</body>
+</html>

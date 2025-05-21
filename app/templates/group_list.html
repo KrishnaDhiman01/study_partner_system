@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Study Groups{% endblock %}
+{% block content %}
+<div class="container-default">
+     <div class="page-header">
+        <h1>Available Study Groups</h1>
+        <a href="{{ url_for('main.create_group') }}" class="btn-default btn-primary-default">Create New Group</a>
+    </div>
+
+    {% if groups %}
+        <div class="table-responsive"> 
+            <table class="table-default table-hover">
+                <thead> <tr><th>Group Name</th><th>Subject</th><th>Members</th><th>Actions</th></tr> </thead>
+                <tbody>
+                    {% for group in groups %}
+                    <tr>
+                        <td><a href="{{ url_for('main.view_group', group_id=group.id) }}" class="group-name-link">{{ group.group_name }}</a></td>
+                        <td>{{ group.subject }}</td>
+                        <td>{{ group.members|length }}</td>
+                        <td class="actions-cell">
+                            <a href="{{ url_for('main.view_group', group_id=group.id) }}" class="btn-default btn-info-default btn-sm">View</a>
+                            {% if current_user and current_user in group.members %}
+                                <form action="{{ url_for('main.leave_group', group_id=group.id) }}" method="POST" class="inline-form">
+                                    <button type="submit" class="btn-default btn-danger-default btn-sm">Leave</button>
+                                </form>
+                            {% elif current_user %} 
+                                 <form action="{{ url_for('main.join_group', group_id=group.id) }}" method="POST" class="inline-form">
+                                    <button type="submit" class="btn-default btn-success-default btn-sm">Join</button>
+                                </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <p>No study groups found. Be the first to <a href="{{ url_for('main.create_group') }}">create one</a>!</p>
+        </div>
+    {% endif %}
+    <p style="margin-top: 2rem;"><a href="{{ url_for('main.dashboard') }}" class="btn-default btn-secondary-default">Back to Dashboard</a></p>
+</div>
+{% endblock %}

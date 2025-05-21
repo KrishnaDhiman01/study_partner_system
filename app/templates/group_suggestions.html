@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}Study Group Suggestions{% endblock %}
+
+{% block content %}
+<div class="container-default">
+    <h1>Study Group Suggestions for {{ current_user_subject }}</h1>
+    <p>Based on clustering users with similar profiles, here are some potential groups:</p>
+
+    {% if suggested_groups %}
+        <div class="results-list" style="margin-top: 1.5rem;">
+            {% for group_members in suggested_groups %}
+                <div class="result-item">
+                    <h3 style="margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 8px; font-size: 1.2em; color: #0056b3;">Potential Group {{ loop.index }}</h3>
+                    <ul style="list-style: none; padding: 0;">
+                        {% for member in group_members %}
+                            <li style="margin-bottom: 10px; padding-bottom: 10px; border-bottom: 1px dashed #f1f1f1; display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <a href="{{ url_for('main.view_profile', view_user_id=member.id) }}" style="font-weight: 500;">{{ member.name }}</a>
+                                    <span style="font-size: 0.9em; color: #555; margin-left: 10px;">
+                                        {% if member.preference %}(Pref: {{ member.preference }}){% endif %}
+                                    </span>
+                                </div>
+                                {% if member.id != session.user_id %}
+                                    <a href="{{ url_for('main.chat', chat_type='user', target_id=member.id) }}" class="btn-default btn-secondary-default btn-sm">Chat</a>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+         <div class="result-item" style="background-color: #f8f9fa; text-align: center; padding: 2rem;">
+             <p style="font-style: italic; margin-bottom: 0;">No suitable study groups could be suggested based on clustering.</p>
+              <p style="font-size: 0.9em; margin-top: 0.5rem;">Try finding partners individually or creating your own group.</p>
+         </div>
+    {% endif %}
+
+    <p style="margin-top: 2rem;"><a href="{{ url_for('main.dashboard') }}" class="btn-default btn-secondary-default">Back to Dashboard</a></p>
+</div>
+{% endblock %}

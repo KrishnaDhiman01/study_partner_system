@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Admin Dashboard{% endblock %}
+{% block content %}
+<div class="container-default">
+    <h1>Admin Dashboard</h1>
+    <p>Welcome, Administrator. Use this area to manage the application.</p>
+
+    <div class="admin-section">
+        <h2>User Management</h2>
+        <ul class="action-list">
+            <li><a href="{{ url_for('admin.view_users') }}" class="btn-default btn-secondary-default">View All Users</a></li>
+        </ul>
+    </div>
+
+     <div class="admin-section">
+        <h2>Group Management</h2>
+        <ul class="action-list">
+            <li><a href="{{ url_for('admin.view_groups') }}" class="btn-default btn-secondary-default">View All Groups</a></li>
+        </ul>
+    </div>
+
+     <div class="admin-section">
+        <h2>System Tools</h2>
+        <ul class="action-list">
+            <li><a href="#" class="btn-default btn-secondary-default">View System Logs (Placeholder)</a></li>
+            <li><a href="#" class="btn-default btn-secondary-default">Application Settings (Placeholder)</a></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

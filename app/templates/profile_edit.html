@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile{% endblock %}
+
+{% block content %}
+<div class="container-default profile-edit"> 
+    <h1>Edit Your Profile</h1>
+
+    <form method="POST" action="{{ url_for('main.edit_profile') }}">
+        <div class="form-group-default"> 
+            <label>Email (Cannot be changed)</label>
+            <input type="email" value="{{ user.email }}" disabled> 
+        </div>
+
+        <div class="form-group-default">
+            <label for="name">Full Name</label>
+            <input type="text" id="name" name="name" value="{{ request.form.get('name', user.name) }}" required>
+        </div>
+        <div class="form-group-default">
+            <label for="subject">Primary Subject</label>
+            <input type="text" id="subject" name="subject" value="{{ request.form.get('subject', user.subject) }}" required placeholder="e.g., Data Structures">
+        </div>
+        <div class="form-group-default">
+            <label for="availability">Availability</label>
+            <input type="text" id="availability" name="availability" value="{{ request.form.get('availability', user.availability) }}" required placeholder="e.g., Mon Eve, Sat AM">
+        </div>
+         <div class="form-group-default">
+            <label for="preference">Learning Style (Optional)</label>
+            <input type="text" id="preference" name="preference" value="{{ request.form.get('preference', user.preference if user.preference else '') }}" placeholder="e.g., Visual, Group Discussion">
+        </div>
+
+        <h3>Change Password (Optional)</h3>
+         <div class="form-group-default">
+            <label for="new_password">New Password</label>
+            <input type="password" id="new_password" name="new_password" placeholder="Leave blank to keep current password" autocomplete="new-password">
+        </div>
+         <div class="form-group-default">
+            <label for="confirm_password">Confirm New Password</label>
+            <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm new password" autocomplete="new-password">
+        </div>
+
+        <div style="margin-top: 2rem; display: flex; justify-content: space-between;">
+            <button type="submit" class="btn-default btn-primary-default">Save Changes</button> {# Use default classes #}
+            <a href="{{ url_for('main.view_profile', view_user_id=user.id) }}" class="btn-default btn-secondary-default">Cancel</a> {# Use default classes #}
+        </div>
+    </form>
+</div>
+{% endblock %}

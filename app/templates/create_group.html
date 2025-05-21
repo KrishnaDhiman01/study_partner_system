@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Create Study Group{% endblock %}
+
+{% block content %}
+<div class="container-default" style="max-width: 700px;">
+    <h1>Create a New Study Group</h1>
+    <form method="POST" action="{{ url_for('main.create_group') }}">
+         <div class="form-group-default">
+            <label for="group_name">Group Name</label>
+            <input type="text" class="form-control" id="group_name" name="group_name" required value="{{ form_data.get('group_name', '') }}">
+        </div>
+        <div class="form-group-default">
+            <label for="subject">Subject</label>
+            <input type="text" class="form-control" id="subject" name="subject" required value="{{ form_data.get('subject', '') }}">
+        </div>
+        <div class="form-group-default">
+             <label for="description">Description (Optional)</label>
+            <textarea class="form-control" id="description" name="description" rows="4">{{ form_data.get('description', '') }}</textarea>
+        </div>
+        <button type="submit" class="btn-default btn-primary-default btn-full-width" style="margin-top: 1rem; padding: 12px;">Create Group</button>
+    </form>
+    <p style="text-align: center; margin-top: 1rem;"><a href="{{ url_for('main.dashboard') }}">Cancel and Go Back to Dashboard</a></p>
+</div>
+{% endblock %}

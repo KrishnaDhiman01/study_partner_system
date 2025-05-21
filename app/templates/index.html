@@ -1,0 +1,40 @@
+{% extends "base.html" %} 
+
+{% block title %}Signup - Study Partner{% endblock %}
+
+{% block content %}
+<div class="container-default" style="max-width: 700px;">
+    <h1 style="text-align: center;">Find Your Study Buddy</h1>
+    <h2 style="text-align: center; color: #6c757d; font-weight: 400; margin-bottom: 2rem;">Sign Up</h2>
+
+    <form method="POST" action="{{ url_for('main.index') }}">
+        <div class="form-group-default">
+            <label for="name">Full Name</label>
+            <input type="text" class="form-control" id="name" name="name" required value="{{ form_data.get('name', '') }}">
+        </div>
+        <div class="form-group-default">
+            <label for="email">Email Address</label>
+            <input type="email" class="form-control" id="email" name="email" required value="{{ form_data.get('email', '') }}" autocomplete="email">
+        </div>
+        <div class="form-group-default">
+            <label for="password">Password</label>
+            <input type="password" class="form-control" id="password" name="password" required autocomplete="new-password">
+        </div>
+        <div class="form-group-default">
+            <label for="subject">Primary Subject</label>
+            <input type="text" class="form-control" id="subject" name="subject" required value="{{ form_data.get('subject', '') }}" placeholder="e.g., Data Structures, Physics 101">
+        </div>
+        <div class="form-group-default">
+            <label for="availability">Availability</label>
+            <input type="text" class="form-control" id="availability" name="availability" required value="{{ form_data.get('availability', '') }}" placeholder="e.g., Mon Eve, Sat AM, Weekends 2-5pm">
+             <small class="form-text text-muted">Be specific: "Mon 6pm-9pm", "Tues Mornings", "Weekends anytime".</small>
+        </div>
+        <div class="form-group-default">
+            <label for="preference">Learning Style/Preference (Optional)</label>
+            <input type="text" class="form-control" id="preference" name="preference" value="{{ form_data.get('preference', '') }}" placeholder="e.g., Visual, Quiet Study, Group Discussion">
+        </div>
+        <button type="submit" class="btn-default btn-primary-default btn-full-width" style="margin-top: 1rem; padding: 12px;">Sign Up</button>
+    </form>
+    <p style="text-align: center; margin-top: 1.5rem;">Already have an account? <a href="{{ url_for('main.login') }}">Login here</a>.</p>
+</div>
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Study Partner Matches{% endblock %}
+
+{% block content %}
+<div class="container-default">
+    <h1>Study Partner Suggestions for {{ current_user_subject }}</h1>
+    <p>Based on compatibility with your profile, here are the top suggestions (lower score is a better match):</p>
+
+    {% if matches %}
+        <div class="results-list" style="margin-top: 1.5rem;">
+            {% for match_data in matches %}
+                <div class="result-item">
+                    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                        
+                        <div style="flex-grow: 1;">
+                            <a href="{{ url_for('main.view_profile', view_user_id=match_data.user.id) }}" style="font-size: 1.2em; font-weight: 600; color: #0056b3;">{{ match_data.user.name }}</a>
+                            <div style="font-size: 0.9em; color: #555; margin-top: 5px;">
+                               <span><strong>Availability:</strong> {{ match_data.user.availability if match_data.user.availability else 'N/A' }}</span><br>
+                               <span><strong>Preference:</strong> {{ match_data.user.preference if match_data.user.preference else 'N/A' }}</span>
+                            </div>
+                        </div>
+                        
+                        <div style="text-align: right; white-space: nowrap; flex-shrink: 0;">
+                            <span style="display: block; font-size: 0.85em; color: #6c757d; margin-bottom: 5px;">
+                                Compatibility Score: {{ "%.1f"|format(match_data.compatibility_score) }}
+                            </span>
+                            <a href="{{ url_for('main.chat', chat_type='user', target_id=match_data.user.id) }}"
+                               class="btn-default btn-primary-default btn-sm"> Chat </a>
+                            <a href="{{ url_for('main.view_profile', view_user_id=match_data.user.id) }}"
+                                class="btn-default btn-secondary-default btn-sm" style="margin-left: 5px;"> Profile </a>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <p style="margin-top: 1rem; font-size: 0.85em; color: #6c757d;">*Lower compatibility score indicates a potentially better match based on subject, preferences, and availability.</p>
+    {% else %}
+        <div class="result-item" style="background-color: #f8f9fa; text-align: center; padding: 2rem;">
+            <p style="font-style: italic; margin-bottom: 0;">No compatible partners found matching your subject and criteria.</p>
+            <p style="font-size: 0.9em; margin-top: 0.5rem;">Consider updating your profile or checking back later.</p>
+        </div>
+    {% endif %}
+
+     <p style="margin-top: 2rem;"><a href="{{ url_for('main.dashboard') }}" class="btn-default btn-secondary-default">Back to Dashboard</a></p>
+</div>
+{% endblock %}

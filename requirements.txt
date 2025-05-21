@@ -1,0 +1,10 @@
+Flask
+Flask-SQLAlchemy
+python-dotenv
+mysql-connector-python
+Flask-WTF
+Werkzeug
+Flask-SocketIO
+eventlet
+scikit-learn
+Flask-Migrate 

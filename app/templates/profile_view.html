@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}{{ profile_user.name }}'s Profile{% endblock %}
+{% block content %}
+<div class="container-default profile-view">
+    <div class="profile-header">
+        <h1>{{ profile_user.name }}</h1>
+        {% if 'user_id' in session and session.user_id == profile_user.id %}
+            <a href="{{ url_for('main.edit_profile') }}" class="btn-default btn-secondary-default">Edit Profile</a>
+        {% endif %}
+    </div>
+
+    <div class="profile-grid">
+        <div class="profile-card">
+            <h3>Contact Information</h3>
+            <p><strong>Email:</strong> {{ profile_user.email }}</p>
+        </div>
+        <div class="profile-card">
+            <h3>Study Preferences</h3>
+            <p><strong>Primary Subject:</strong> {{ profile_user.subject }}</p>
+            <p><strong>Availability:</strong> {{ profile_user.availability }}</p>
+            <p><strong>Learning Preference:</strong> {{ profile_user.preference if profile_user.preference else 'Not specified' }}</p>
+        </div>
+    </div>
+
+    <div class="profile-section">
+        <h3>Member of Groups</h3>
+        {% if profile_user.member_of_groups %}
+            <ul class="info-list">
+                {% for group in profile_user.member_of_groups %}
+                    <li>
+                        <a href="{{ url_for('main.view_group', group_id=group.id) }}">{{ group.group_name }}</a>
+                        <span class="text-muted"> (Subject: {{ group.subject }})</span>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">{{ profile_user.name }} is not currently a member of any groups.</p>
+        {% endif %}
+    </div>
+
+    <div class="profile-section">
+        <h3>Created Groups</h3>
+        {% if profile_user.created_groups %}
+            <ul class="info-list">
+                 {% for group in profile_user.created_groups %}
+                     <li>
+                        <a href="{{ url_for('main.view_group', group_id=group.id) }}">{{ group.group_name }}</a>
+                        <span class="text-muted"> (Subject: {{ group.subject }})</span>
+                    </li>
+                 {% endfor %}
+            </ul>
+        {% else %}
+             <p class="text-muted">{{ profile_user.name }} has not created any groups.</p>
+        {% endif %}
+    </div>
+
+    <p style="margin-top: 2rem;">
+        <a href="{{ url_for('main.dashboard') }}" class="btn-default btn-light-default">Back to Dashboard</a>
+    </p>
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}{{ group.group_name }} - Details{% endblock %}
+{% block content %}
+<div class="container-default group-view">
+    <div class="page-header">
+        <div>
+            <h1>{{ group.group_name }}</h1>
+            <p class="text-muted subheader">Subject: <strong>{{ group.subject }}</strong> | Created by: <a href="{{ url_for('main.view_profile', view_user_id=group.creator.id) }}">{{ group.creator.name }}</a></p>
+        </div>
+        <div class="actions-cell">
+             {% if is_member %}
+                <form action="{{ url_for('main.leave_group', group_id=group.id) }}" method="POST"> <button type="submit" class="btn-default btn-danger-default">Leave Group</button> </form>
+            {% else %}
+                 <form action="{{ url_for('main.join_group', group_id=group.id) }}" method="POST"> <button type="submit" class="btn-default btn-success-default">Join Group</button> </form>
+            {% endif %}
+             {% if current_user_id == group.created_by_id %} {# Use passed current_user_id #}
+                 <a href="#" class="btn-default btn-secondary-default" style="margin-left: 10px;">Edit Group</a>
+             {% endif %}
+        </div>
+    </div>
+
+    {% if group.description %}
+    <div class="group-description">
+        <h4>Description</h4> <p>{{ group.description }}</p>
+    </div>
+    {% endif %}
+
+    <div class="group-members section-card">
+        <h3>Members ({{ group.members|length }})</h3>
+        {% if group.members %}
+            <ul class="info-list member-list">
+                {% for member in group.members %}
+                <li>
+                    <a href="{{ url_for('main.view_profile', view_user_id=member.id) }}">{{ member.name }}</a>
+                    {% if member.id == group.created_by_id %} <span class="text-muted">(Creator)</span> {% endif %}
+                    {% if member.id != current_user_id and is_member %}
+                        <a href="{{ url_for('main.chat', chat_type='user', target_id=member.id) }}" class="btn-default btn-secondary-default btn-sm chat-member-btn">Chat</a>
+                    {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="text-muted">This group currently has no members.</p>
+        {% endif %}
+    </div>
+
+    {% if is_member %}
+     <div class="section-card" style="margin-top: 2rem;">
+         <h3>Group Chat</h3>
+         <p>Connect with your group members in real-time.</p>
+         <a href="{{ url_for('main.chat', chat_type='group', target_id=group.id) }}" class="btn-default btn-primary-default">Open Group Chat</a>
+     </div>
+    {% endif %}
+
+     <p style="margin-top: 2rem;"><a href="{{ url_for('main.list_groups') }}" class="btn-default btn-light-default">Back to Group List</a></p>
+</div>
+{% endblock %}

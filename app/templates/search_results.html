@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}Search Results for "{{ query }}"{% endblock %}
+
+{% block content %}
+<div class="container-default">
+    <h1>Search Results</h1>
+
+    {% if query %}
+        <h2>Results for: “<span style="font-style: italic;">{{ query }}</span>”</h2>
+    {% else %}
+        <p>Please enter a search term in the navigation bar to find users.</p>
+    {% endif %}
+
+    {% if results %}
+        <ul class="search-results-list-default" style="margin-top: 1.5rem;"> 
+            {% for user in results %}
+                <li style="border-bottom: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between; align-items: center;"> {# Basic item style #}
+                    <div>
+                        <a href="{{ url_for('main.view_profile', view_user_id=user.id) }}" style="font-weight: 600;">{{ user.name }}</a><br>
+                        <span style="font-size: 0.9em; color: #555;">
+                            {{ user.email }} | Subject: {{ user.subject }}
+                        </span>
+                    </div>
+                    <div>
+                        {% if user.id != session.user_id %} 
+                         <a href="{{ url_for('main.chat', chat_type='user', target_id=user.id) }}" class="btn-default btn-primary-default btn-sm">Chat</a>
+                        {% endif %}
+                         <a href="{{ url_for('main.view_profile', view_user_id=user.id) }}" class="btn-default btn-secondary-default btn-sm" style="margin-left: 5px;">Profile</a>
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    {% elif query %}
+        <p style="margin-top: 1.5rem; font-style: italic;">No matching users found.</p>
+    {% endif %}
+
+    <p style="margin-top: 2rem;"><a href="{{ url_for('main.dashboard') if 'user_id' in session else url_for('main.index') }}">Back</a></p>
+
+</div>
+{% endblock %}

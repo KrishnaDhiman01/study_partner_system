@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% block title %}Admin - View Users{% endblock %}
+{% block content %}
+<div class="container-default">
+    <div class="page-header">
+        <h1>View All Users</h1>
+    </div>
+
+    {% if users_pagination and users_pagination.items %}
+        <div class="table-responsive">
+            <table class="table-default table-hover admin-table">
+                <thead> <tr><th>ID</th><th>Name</th><th>Email</th><th>Subject</th><th>Actions</th></tr> </thead>
+                <tbody>
+                    {% for user in users_pagination.items %}
+                    <tr>
+                        <td>{{ user.id }}</td>
+                        <td><a href="{{ url_for('main.view_profile', view_user_id=user.id) }}">{{ user.name }}</a></td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.subject }}</td>
+                        <td class="actions-cell">
+                            <a href="#" class="btn-default btn-secondary-default btn-sm">Edit</a>
+                            {% if user.id != session.user_id %}
+                            <form action="{{ url_for('admin.delete_user', user_id=user.id) }}" method="POST" class="inline-form" onsubmit="return confirm('Are you sure you want to delete user {{ user.name }}? This cannot be undone.');">
+                                <button type="submit" class="btn-default btn-danger-default btn-sm">Delete</button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if users_pagination.pages > 1 %}
+        <nav aria-label="User pagination" class="pagination-nav">
+            <ul class="pagination">
+                <li class="page-item {% if not users_pagination.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.view_users', page=users_pagination.prev_num if users_pagination.has_prev else '#') }}">Previous</a>
+                </li>
+                {% for page_num in users_pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if users_pagination.page == page_num %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('admin.view_users', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if not users_pagination.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.view_users', page=users_pagination.next_num if users_pagination.has_next else '#') }}">Next</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+
+    {% else %}
+        <div class="empty-state"><p>No users found in the database.</p></div>
+    {% endif %}
+     <p style="margin-top: 2rem;"><a href="{{ url_for('admin.admin_home') }}" class="btn-default btn-light-default">Back to Admin Dashboard</a></p>
+</div>
+{% endblock %}

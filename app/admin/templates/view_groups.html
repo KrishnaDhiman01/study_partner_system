@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}Admin - View Groups{% endblock %}
+{% block content %}
+<div class="container-default">
+    <div class="page-header">
+        <h1>View All Study Groups</h1>
+    </div>
+
+    {% if groups_pagination and groups_pagination.items %}
+        <div class="table-responsive">
+            <table class="table-default table-hover admin-table">
+                <thead> <tr><th>ID</th><th>Name</th><th>Subject</th><th>Creator</th><th>Members</th><th>Actions</th></tr> </thead>
+                <tbody>
+                    {% for group in groups_pagination.items %}
+                    <tr>
+                        <td>{{ group.id }}</td>
+                        <td><a href="{{ url_for('main.view_group', group_id=group.id) }}">{{ group.group_name }}</a></td>
+                        <td>{{ group.subject }}</td>
+                        <td>
+                            {% if group.creator %}
+                                <a href="{{ url_for('main.view_profile', view_user_id=group.creator.id) }}">{{ group.creator.name }} (ID: {{group.creator.id}})</a>
+                            {% else %} N/A {% endif %}
+                        </td>
+                         <td>{{ group.members|length }}</td>
+                        <td class="actions-cell">
+                             <a href="{{ url_for('main.view_group', group_id=group.id) }}" class="btn-default btn-info-default btn-sm">View</a>
+                             <form action="{{ url_for('admin.delete_group', group_id=group.id) }}" method="POST" class="inline-form" onsubmit="return confirm('Are you sure you want to delete group \'{{ group.group_name|e }}\'? This action cannot be undone and will also delete associated messages.');">
+                                <button type="submit" class="btn-default btn-danger-default btn-sm">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% if groups_pagination.pages > 1 %}
+        <nav aria-label="Group pagination" class="pagination-nav">
+            <ul class="pagination">
+                <li class="page-item {% if not groups_pagination.has_prev %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.view_groups', page=groups_pagination.prev_num if groups_pagination.has_prev else '#') }}">Previous</a>
+                </li>
+                {% for page_num in groups_pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if page_num %}
+                        <li class="page-item {% if groups_pagination.page == page_num %}active{% endif %}">
+                            <a class="page-link" href="{{ url_for('admin.view_groups', page=page_num) }}">{{ page_num }}</a>
+                        </li>
+                    {% else %}
+                        <li class="page-item disabled"><span class="page-link">...</span></li>
+                    {% endif %}
+                {% endfor %}
+                <li class="page-item {% if not groups_pagination.has_next %}disabled{% endif %}">
+                    <a class="page-link" href="{{ url_for('admin.view_groups', page=groups_pagination.next_num if groups_pagination.has_next else '#') }}">Next</a>
+                </li>
+            </ul>
+        </nav>
+        {% endif %}
+
+    {% else %}
+        <div class="empty-state"><p>No study groups found in the system.</p></div>
+    {% endif %}
+     <p style="margin-top: 2rem;"><a href="{{ url_for('admin.admin_home') }}" class="btn-default btn-light-default">Back to Admin Dashboard</a></p>
+</div>
+{% endblock %}
